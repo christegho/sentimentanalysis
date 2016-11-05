@@ -1,10 +1,12 @@
-documents = {}
-for root, dirs, filenames in os.walk(indir):
-    for filename in filenames:
-		file = open(indir+'\\'+filename,'r')
-		text = file.read().lower()    
-		file.close()
-		words = re.findall(r"[\w']+|[.,!?;]*", text)
-		documents[filename]=filter(None, words)
+from tokenize import *
+from getUniqueWords import *
 
-os.path.abspath('')
+indir = os.path.abspath('') + '\\POS'
+
+posDocs = tokenize(indir)
+posLexicon = getUniqueWords(posDocs)
+posLexiconWeights = getLexiconWeights(posLexicon, posDocs)
+
+for document in posDocs:
+
+	posSymbolicScores = getSymbolicScore(posLexicon, posDocs[document]):

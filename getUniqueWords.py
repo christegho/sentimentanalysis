@@ -3,5 +3,5 @@ def getUniqueWords(documents) :
     for doc in documents:
     	for word in documents[doc]:
         	if not word in uniqueWords:
-            	uniqueWords.append(word)
+        		uniqueWords.append(word)
     return uniqueWords
