@@ -1,13 +1,17 @@
-def getLexiconWeights(lexicon, documents):
-	lexiconWeights = [0]*length(lexicon)
+from getSymbolicScore import *
+
+def getLexiconWeights(lexicon, documents, negdocuments, alpha) :
+	lexiconWeights = [0]*len(poslexicon)
 
 	for document in documents:
+		classSymbolicScores = getSymbolicScore(lexicon, documents[document])
+		lexiconWeights = [i + j for i,j in zip(lexiconWeights, classSymbolicScores[2])]
 
-		classSymbolicScores = getSymbolicScore(lexicon, documents[document]):
-		negClassSymbolicScores = getSymbolicScore(lexicon, documents[document]):
-		lexiconWeights = [i + j for i,j in zip(lexiconWeights, classSymbolicScores[3])]
-		lexiconWeights = [i - j for i,j in zip(lexiconWeights, negClassSymbolicScores[3])]
+	for document in negdocuments:
+		negClassSymbolicScores = getSymbolicScore(lexicon, negdocuments[document])
+		lexiconWeights = [i - alpha*j for i,j in zip(lexiconWeights, negClassSymbolicScores[2])]
+
 	sumLexiconWeights = sum(lexiconWeights)
 	if sumLexiconWeights != 0:
-		lexiconWeights = [x / sumLexiconWeights for x in lexiconWeights]
+		lexiconWeights = [float(x)/sumLexiconWeights for x in lexiconWeights]
 	return lexiconWeights
