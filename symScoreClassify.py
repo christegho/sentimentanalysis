@@ -1,4 +1,6 @@
 from getSymbolicScore import *
+import numpy as np
+
 def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, posClass):
 	#classify documents based on symbolic score and weighted symbolic score
 	posClassWeightedSS = []
@@ -20,14 +22,12 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 		if (posSymbolicScores[0] == negSymbolicScores[0]):
 			posClassNonWeightedSS.append(document)
 			negClassNonWeightedSS.append(document)
-
 			if (posClass):
 				tp += .5
 				fn += .5
 			else:
 				tn += .5
 				fp += .5
-
 		elif (posSymbolicScores[0] > negSymbolicScores[0]):
 			posClassNonWeightedSS.append(document)
 			if (posClass):
@@ -40,8 +40,7 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 				fn += 1
 			else:
 				tn += 1
-
-
+		
 		posWeightedScores = np.array(posSymbolicScores[1])*posLexiconWeights
 		negWeightedScores = np.array(negSymbolicScores[1])*negLexiconWeights
 		if (sum(posWeightedScores) == sum(negWeightedScores)):

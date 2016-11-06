@@ -19,8 +19,9 @@ testPosDocs = posDocs
 posLexicon = getUniqueWords(posDocs)
 negLexicon = getUniqueWords(negDocs)
 
-posLexiconWeights = np.array(getLexiconWeights(posLexicon, posDocs, negDocs, 1))
-negLexiconWeights = np.array(getLexiconWeights(negLexicon, negDocs, posDocs, 1))
+posLexiconWeights = np.array(getLexiconWeights(posLexicon, posDocs, negDocs, .5))
+negLexiconWeights = np.array(getLexiconWeights(negLexicon, negDocs, posDocs, .5))
 
 
 posClassWeightedSS, posClassNonWeightedSS, negClassWeightedSS, negClassNonWeightedSS, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(testPosDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, True)
+print tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn

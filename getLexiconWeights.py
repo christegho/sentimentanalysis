@@ -1,7 +1,7 @@
 from getSymbolicScore import *
 
 def getLexiconWeights(lexicon, documents, negdocuments, alpha) :
-	lexiconWeights = [0]*len(poslexicon)
+	lexiconWeights = [0]*len(lexicon)
 
 	for document in documents:
 		classSymbolicScores = getSymbolicScore(lexicon, documents[document])
