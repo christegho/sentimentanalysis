@@ -14,6 +14,8 @@ posDocs = tokenize(posindir)
 negDocs = tokenize(negindir)
 
 testPosDocs = posDocs
+#nfold = 10
+#iteration = 1
 # trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
 
 posLexicon = getUniqueWords(posDocs)

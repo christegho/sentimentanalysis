@@ -2,9 +2,13 @@ from getSymbolicScore import *
 import numpy as np
 
 def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, posClass):
+	"""
+	Function classifies documents based on symbolic scores (wighted and non weighted) and returns confusion matrix values
+	@author ct506 Chris Tegho
+	"""
 	#classify documents based on symbolic score and weighted symbolic score
-	posClassWeightedSS = []
-	posClassNonWeightedSS = []
+	posClassWeightedSS = [] #Vector with all docs classified as positive  by the weighted symbolic score
+	posClassNonWeightedSS = [] #Vector with all docs classified as positive  by the non weighted symbolic score
 	negClassWeightedSS = []
 	negClassNonWeightedSS = []
 	tp = 0
@@ -17,8 +21,8 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 	weightedfn = 0
 
 	for document in testDocs:
-		posSymbolicScores = getSymbolicScore(posLexicon, testDocs[document])
-		negSymbolicScores = getSymbolicScore(negLexicon, testDocs[document])
+		posSymbolicScores = getSymbolicScore(posLexicon, testDocs[document]) #Get score for pos class lexicon
+		negSymbolicScores = getSymbolicScore(negLexicon, testDocs[document]) #Get score for neg class lexicon
 		if (posSymbolicScores[0] == negSymbolicScores[0]):
 			posClassNonWeightedSS.append(document)
 			negClassNonWeightedSS.append(document)
