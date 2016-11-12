@@ -1,6 +1,6 @@
 from tokenize import *
 from getUniqueWords import *
-from getLexiconWeights import *
+from getLexicon import *
 from getSymbolicScore import *
 from symScoreClassify import *
 from splitData import *
@@ -16,21 +16,16 @@ posDocs = tokenize(posindir)
 negDocs = tokenize(negindir)
 
 testPosDocs = posDocs
-#nfold = 10
-#iteration = 1
-# trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+nfold = 10
+iteration = 1
+trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
 
-posLexicon = getUniqueWords(posDocs)
-negLexicon = getUniqueWords(negDocs)
+posLexicon, negLexicon, posLexiconWeights, negLexiconWeights = getLexicon()
 
-posLexiconWeights = np.array(getLexiconWeights(posLexicon, posDocs, negDocs, .5))
-negLexiconWeights = np.array(getLexiconWeights(negLexicon, negDocs, posDocs, .5))
-
-
-_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(testPosDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, True)
+_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(trainPosDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, True)
 print tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn
 
-_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(testNegDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, False)
+_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(trainNegDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, False)
 print tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn
 
 #Naive Bayes
@@ -53,4 +48,5 @@ print tp, tn, fp, fn
 
 tp, tn, fp, fn = naiveBayesClassify(testNegDocs, vocabulary, posDocFSmoothing, negDocF, False, 1)
 print tp, tn, fp, fn
+
 

@@ -23,7 +23,7 @@ def splitData(posDocs, negDocs, nfold, iteration):
 		negStart = len(negDocs)
 
 	trainPosDocs2 = dict(posDocs.items()[posStart:])
-	trainNegDocs2 = dict(posDocs.items()[negStart:])
+	trainNegDocs2 = dict(negDocs.items()[negStart:])
 
 	trainPosDocs = dict(trainPosDocs1.items() + trainPosDocs2.items())
 	trainNegDocs = dict(trainNegDocs1.items() + trainNegDocs2.items())
