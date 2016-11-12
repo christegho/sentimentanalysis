@@ -24,5 +24,5 @@ def getFeatureVector(vocabulary, documents, negdocuments, smoothing) :
 
 	sumNegLexiconWeights = sum(negDocF)
 	if sumNegLexiconWeights != 0:
-		negDocF = [(float(x)+smoothing)/((sumNegLexiconWeights)+smoothing*len(vocabulary))  for x in negDocF]
+		negDocF = [(float(x)+smoothing)/(sumNegLexiconWeights+smoothing*len(vocabulary))  for x in negDocF]
 	return posDocF, negDocF
