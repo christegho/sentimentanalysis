@@ -26,7 +26,7 @@ def getLexicon():
 			if (not lexiconword in negLexicon):
 				negLexicon.append(lexiconword) 
 				negLexiconWeights.append(weight)
-		else:
+		elif (polarity == 'positive'):
 			if (not lexiconword in posLexicon):
 				posLexicon.append(lexiconword) 
 				posLexiconWeights.append(weight)

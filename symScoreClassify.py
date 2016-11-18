@@ -44,7 +44,7 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 				fn += 1
 			else:
 				tn += 1
-		print '%d %d %s' %(posSymbolicScores[0], negSymbolicScores[0], document)
+
 		posWeightedScores = np.array(posSymbolicScores[1])*posLexiconWeights
 		negWeightedScores = np.array(negSymbolicScores[1])*negLexiconWeights
 		if (sum(posWeightedScores) == sum(negWeightedScores)):

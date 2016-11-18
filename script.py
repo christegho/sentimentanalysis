@@ -17,36 +17,50 @@ negDocs = tokenize(negindir)
 
 testPosDocs = posDocs
 nfold = 10
-iteration = 1
-trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
-
 posLexicon, negLexicon, posLexiconWeights, negLexiconWeights = getLexicon()
 
-_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(trainPosDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, True)
-print tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn
+results = np.zeros((10,8))
+for iteration in range(0,nfold):
+	print iteration
+	trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+	resultsIteration = symScoreClassify(testPosDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, True)
+	print resultsIteration[4:12]
+	results[iteration,:] += np.array(resultsIteration[4:12])
+	resultsIteration = symScoreClassify(testNegDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, False)
+	print resultsIteration[4:12]
+	results[iteration,:] += np.array(resultsIteration[4:12])
 
-_, _, _, _, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn = symScoreClassify(trainNegDocs, posLexicon, negLexicon, posLexiconWeights, negLexiconWeights, False)
-print tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn
+print np.matrix(results).mean(0)
 
 #Naive Bayes
-posVocabulary = getUniqueWords(posDocs)
-negVocabulary = getUniqueWords(negDocs)
+posVocabulary = getUniqueWords(trainPosDocs)
+negVocabulary = getUniqueWords(trainNegDocs)
 
 vocabulary = set(posVocabulary+negVocabulary)
 
-posDocF, negDocF = getFeatureVector(vocabulary, posDocs, negDocs, 1)
-posDocFSmoothing, negDocFSmoothing = getFeatureVector(vocabulary, posDocs, negDocs, 1)
-
-tp, tn, fp, fn = naiveBayesClassify(testPosDocs, vocabulary, posDocF, negDocF, True, 0)
-print tp, tn, fp, fn
-
-tp, tn, fp, fn = naiveBayesClassify(testNegDocs, vocabulary, posDocF, negDocF, False, 0)
-print tp, tn, fp, fn
-
-tp, tn, fp, fn = naiveBayesClassify(testPosDocs, vocabulary, posDocFSmoothing, negDocF, True, 1)
-print tp, tn, fp, fn
-
-tp, tn, fp, fn = naiveBayesClassify(testNegDocs, vocabulary, posDocFSmoothing, negDocF, False, 1)
-print tp, tn, fp, fn
+results = np.zeros((10,4))
+for iteration in range(0,nfold):
+	print iteration
+	trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+	posDocF, negDocF = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 1)
+	posDocFSmoothing, negDocFSmoothing = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 1)
+	resultsIteration = naiveBayesClassify(testPosDocs, vocabulary, posDocF, negDocF, True, 1)
+	print resultsIteration
+	results[iteration,:] += np.array(resultsIteration)
+	resultsIteration = naiveBayesClassify(testNegDocs, vocabulary, posDocF, negDocF, False, 1)
+	print resultsIteration
+	results[iteration,:] += np.array(resultsIteration)
 
 
+results = np.zeros((10,4))
+for iteration in range(0,nfold):
+	print iteration
+	trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+	posDocF, negDocF = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 0)
+	posDocFSmoothing, negDocFSmoothing = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 0)
+	resultsIteration = naiveBayesClassify(testPosDocs, vocabulary, posDocF, negDocF, True, 0)
+	print resultsIteration
+	results[iteration,:] += np.array(resultsIteration)
+	resultsIteration = naiveBayesClassify(testNegDocs, vocabulary, posDocF, negDocF, False, 0)
+	print resultsIteration
+	results[iteration,:] += np.array(resultsIteration)
