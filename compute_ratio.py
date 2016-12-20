@@ -10,4 +10,6 @@ def compute_ratio(poscounts, negcounts, alpha=1):
     p /= abs(p).sum()
     q /= abs(q).sum()
     r = np.log(p/q)
-    return dic, r
+    p = np.log(p)
+    q = np.log(q)
+    return dic, r, p, q 
