@@ -15,7 +15,7 @@ negindir = os.path.abspath('') + '\\NEG'
 posDocs = tokenize(posindir)
 negDocs = tokenize(negindir)
 
-testPosDocs = posDocs
+
 nfold = 10
 posLexicon, negLexicon, posLexiconWeights, negLexiconWeights = getLexicon()
 
@@ -33,15 +33,14 @@ for iteration in range(0,nfold):
 print np.matrix(results).mean(0)
 
 #Naive Bayes
-posVocabulary = getUniqueWords(trainPosDocs)
-negVocabulary = getUniqueWords(trainNegDocs)
-
-vocabulary = set(posVocabulary+negVocabulary)
 
 results = np.zeros((10,4))
 for iteration in range(0,nfold):
 	print iteration
 	trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+	posVocabulary = getUniqueWords(trainPosDocs)
+	negVocabulary = getUniqueWords(trainNegDocs)
+	vocabulary = set(posVocabulary+negVocabulary)
 	posDocF, negDocF = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 1)
 	posDocFSmoothing, negDocFSmoothing = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 1)
 	resultsIteration = naiveBayesClassify(testPosDocs, vocabulary, posDocF, negDocF, True, 1)
@@ -56,6 +55,9 @@ results = np.zeros((10,4))
 for iteration in range(0,nfold):
 	print iteration
 	trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, nfold, iteration)
+	posVocabulary = getUniqueWords(trainPosDocs)
+	negVocabulary = getUniqueWords(trainNegDocs)
+	vocabulary = set(posVocabulary+negVocabulary)
 	posDocF, negDocF = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 0)
 	posDocFSmoothing, negDocFSmoothing = getFeatureVector(vocabulary, trainPosDocs, trainNegDocs, 0)
 	resultsIteration = naiveBayesClassify(testPosDocs, vocabulary, posDocF, negDocF, True, 0)
