@@ -1,58 +1,60 @@
-
-
-trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, 10, 1)
-
-posVocabulary = getUniqueWords(trainPosDocs)
-negVocabulary = getUniqueWords(trainNegDocs)
-vocabulary = set(posVocabulary+negVocabulary)
-
-xTrainWeighted = [];
-xTrain = [];
-yTrain = [];
-for doc in trainPosDocs:
- symbolicScores = getSymbolicScore(vocabulary, trainPosDocs[doc])
- xTrainWeighted.append(symbolicScores[2])
- xTrain.append(symbolicScores[1])
- yTrain.append(1)
-
-for doc in trainNegDocs:
- symbolicScores = getSymbolicScore(vocabulary, trainNegDocs[doc])
- xTrainWeighted.append(symbolicScores[2])
- xTrain.append(symbolicScores[1])
- yTrain.append(0)
-
-xTest = [];
-xTestWeighted = []
-for doc in testPosDocs:
- symbolicScores = getSymbolicScore(vocabulary, testPosDocs[doc])
- xTest.append(symbolicScores[1])
- xTestWeighted.append(symbolicScores[2])
-
-for doc in testNegDocs:
- symbolicScores = getSymbolicScore(vocabulary, testNegDocs[doc])
- xTest.append(symbolicScores[1])
- xTestWeighted.append(symbolicScores[2])
-
-#http://scikit-learn.org/stable/modules/neural_networks_supervised.html
-
 from sklearn.neural_network import MLPClassifier
+from buildDict import *
+from computeRatio import *
+from processFilesMLP import *
 
-#training and fitting of the MLP
-clf = MLPClassifier(solver='lbfgs', alpha=.8, hidden_layer_sizes=(10, 6), random_state=1)
-clf.fit(xTrain, yTrain) 
+def mlpClassify(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, alpha, stemmer, negation):
+	poscounts  = buildDict(posindir, ngram, trainPosDocs, stemmer, negation)
+	negcounts  = buildDict(negindir, ngram, trainNegDocs, stemmer, negation)
 
-#predict labels
-yTest = clf.predict(xTest) 
+	vocabulary, ratio, posProbs, negProbs = computeRatio(poscounts, negcounts, alpha)
 
-tp = sum(yTest[:99])
-tn = sum(yTest[99:])	
+	xTrain = [];
+	xTrainWeighted = []
+	yTrain = [];
+	for document in trainPosDocs:
+		indeces, indecesWeighted = processFilesMLP(posindir + '/' + document, vocabulary, posProbs, ngram, stemmer, negation)
+		#negLikIndexed, negLik = processFiles(directory + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		xTrain.append(indeces)
+		xTrainWeighted.append(indecesWeighted)
+		yTrain.append(1)
+
+	for document in trainNegDocs:
+		indeces, indecesWeighted = processFilesMLP(negindir + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		#negLikIndexed, negLik = processFiles(directory + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		xTrain.append(indeces)
+		xTrainWeighted.append(indecesWeighted)
+		yTrain.append(0)
+
+
+	xTest = [];
+	xTestWeighted = [];
+	for document in testPosDocs:
+		indeces, indecesWeighted = processFilesMLP(posindir + '/' + document, vocabulary, posProbs, ngram, stemmer, negation)
+		#negLikIndexed, negLik = processFiles(directory + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		xTest.append(indeces)
+		xTestWeighted.append(indecesWeighted)
+
+	for document in testNegDocs:
+		indeces, indecesWeighted = processFilesMLP(negindir + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		#negLikIndexed, negLik = processFiles(directory + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
+		xTest.append(indeces)
+		xTestWeighted.append(indecesWeighted)
+
+	#http://scikit-learn.org/stable/modules/neural_networks_supervised.html
 
 
 
-#SVM
-from sklearn import svm
-clf = svm.SVC()
-clf.fit(xTrain, yTrain) 
+	#training and fitting of the MLP
+	clf = MLPClassifier(solver='lbfgs', alpha=.1, hidden_layer_sizes=(10, 6), random_state=1)
+	clf.fit(xTrain, yTrain) 
 
-#predict labels
-yTest = clf.predict(xTest) 
+	#predict labels
+	yTest = clf.predict(xTest) 
+
+	tp = sum(yTest[:99])
+	fp = sum(yTest[99:])
+	tn = 99-fp
+	fn = 99-tp	
+
+	return tp, tn, fp, fn, yTest

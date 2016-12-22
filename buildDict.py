@@ -1,14 +1,14 @@
 import os
-from tokenizeBigrams import *
+from tokenizeNgrams import *
 from collections import Counter
 
-def buildDict(indir, grams, docs):
+def buildDict(indir, grams, docs, stemmer, negation):
 	dic = Counter()
 
 	for root, dirs, filenames in os.walk(indir):
 		for filename in docs:
 			for sentence in open(indir+'\\'+filename,'r').xreadlines():
-				tokens = tokenizeBigrams(sentence, grams)
+				tokens = tokenizeNgrams(sentence, grams, stemmer, negation)
 				dic.update(tokens)
 
 

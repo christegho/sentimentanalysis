@@ -1,26 +1,39 @@
 from buildDict import *
-from tokenizeBigrams import *
-from compute_ratio import *
+from tokenizeNgrams import *
+from computeRatio import *
 from getDocLabels import *
 from splitDocs import *
 from processFiles import *
-from naiveBayesClassify2 import *
-posindir = os.path.abspath('') + '\\POS1'
-negindir = os.path.abspath('') + '\\NEG1'
+from naiveBayes import *
+posindir = os.path.abspath('') + '\\POS'
+negindir = os.path.abspath('') + '\\NEG'
 
 posDocsLabels = getDocLabels(posindir)
 negDocsLabels = getDocLabels(negindir)
 
-trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitDocs(posDocsLabels, negDocsLabels, 3, 1)
+
+allGramsResults = {}
+for n in range(3):
+ ngram = [n+1]
+ allGramsResults[ngram[0]] = np.zeros((10,4))
+
+significantTestArrays = {}
+nfold = 10
+#for iteration in range(0,nfold):
+iteration = 0
+significantTestArrays = {}
+significantTestArrays[ngram[0]] = [[],[]]
+alpha=1
+stemmer = True
+negation = True
+for n in range(3): 
+ ngram = [n+1]
+ trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitDocs(posDocsLabels, negDocsLabels, nfold, iteration)
+ results = naiveBayes(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, alpha, stemmer, negation)
+ print results[0]
+ allGramsResults[ngram[0]][iteration,:] += results[0][0]
+ significantTestArrays[ngram[0]] = [[],[]]
+ significantTestArrays[ngram[0]][0] = results[1]
+ significantTestArrays[ngram[0]][1] = results[2]
 
 
-ngram = [2]
-poscounts  = buildDict(posindir, ngram, trainPosDocs)
-negcounts  = buildDict(negindir, ngram, trainNegDocs)
-
-
-vocabulary, r, posProbs, negProbs = compute_ratio(poscounts, negcounts, alpha=1)
-
-#featureVectorIndexed, featureVector = processFiles(posindir+'/cv985_6359.txt', dic, r, ngram)
-
-naiveBayesClassify2(testPosDocs, vocabulary, posProbs, negProbs, True, ngram, posindir)

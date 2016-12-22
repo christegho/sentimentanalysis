@@ -1,23 +1,23 @@
-from tokenizeBigrams import *
-from tokenizeBigrams import *
+from tokenizeNgrams import *
 
-def processFiles(filename, dic, r, ngram):
+def processFiles(filename, vocabulary, ratio, ngram, stemmer, negation):
     indexesFile = []
-    for l in open(filename).xreadlines():
-        tokens = tokenizeBigrams(l, ngram)
+    for doc in open(filename).xreadlines():
+        tokens = tokenizeNgrams(doc, ngram, stemmer, negation)
         indexes = []
-        for t in tokens:
+        for token in tokens:
             try:
-                indexes += [dic[t]]
+                indexes += [vocabulary[token]]
             except KeyError:
                 pass
         indexes = list(set(indexes))
         indexesFile += indexes
+        indexesFileUnsorted = indexesFile
         indexesFile.sort()
         featureVectorIndexed = []
         featureVector = []
         for i in indexesFile:
-            featureVectorIndexed += ["%i:%f" % (i + 1, r[i])]
-            featureVector.append(r[i])
+            featureVectorIndexed += ["%i:%f" % (i + 1, ratio[i])]
+            featureVector.append(ratio[i])
 
-    return featureVectorIndexed, featureVector
+    return featureVectorIndexed, featureVector, indexesFileUnsorted
