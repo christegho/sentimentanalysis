@@ -14,31 +14,29 @@ posDocsLabels = getDocLabels(posindir)
 negDocsLabels = getDocLabels(negindir)
 
 
-allGramsResultsNB = {}
+allGramsResultsNBF = {}
+nfold = 10
+significantTestArraysNBF = {}
 
 for n in range(3):
  ngram = [n+1]
- allGramsResultsNB[ngram[0]] = np.zeros((10,4))
+ allGramsResultsNBF[ngram[0]] = np.zeros((10,4))
+ significantTestArraysNBF[ngram[0]] = [[[1]*nfold],[[1]*nfold]]
 
-allGramsResultsMLP = allGramsResultsNB
 
-significantTestArraysNB = {}
-nfold = 3
-#for iteration in range(0,nfold):
-iteration = 0
-
-alpha=1
-stemmer = True
-negation = True
-for n in range(3): 
- ngram = [n+1]
+for iteration in range(0,nfold):
+ alpha=1
+ stemmer = False
+ negation = False
  trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitDocs(posDocsLabels, negDocsLabels, nfold, iteration)
- 
- naiveBayesResults = naiveBayes(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, alpha, stemmer, negation)
- print naiveBayesResults[0]
- allGramsResultsNB[ngram[0]][iteration,:] += naiveBayesResults[0][0]
- significantTestArraysNB[ngram[0]] = [[[]*nfold],[[]*nfold]]
- significantTestArraysNB[ngram[0]][0][iteration] = naiveBayesResults[1]
- significantTestArraysNB[ngram[0]][1][iteration] = naiveBayesResults[2]
+ for n in range(3): 
+  ngram = [n+1]
+  naiveBayesResults = naiveBayes(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, alpha, stemmer, negation)
+  print n
+  print iteration
+  print naiveBayesResults[0]
+  allGramsResultsNBF[ngram[0]][iteration,:] += naiveBayesResults[0][0]
+  significantTestArraysNBF[ngram[0]][0][0][iteration] = naiveBayesResults[1]
+  significantTestArraysNBF[ngram[0]][1][0][iteration] = naiveBayesResults[2]
 
 

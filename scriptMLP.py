@@ -54,11 +54,11 @@ for doc in testNegDocs:
 from sklearn.neural_network import MLPClassifier
 
 #training and fitting of the MLP
-clf = MLPClassifier(solver='lbfgs', alpha=.8, hidden_layer_sizes=(10, 6), random_state=1)
-clf.fit(xTrain, yTrain) 
+classifierMLP = MLPClassifier(solver='lbfgs', alpha=.8, hidden_layer_sizes=(10, 6), random_state=1)
+classifierMLP.fit(xTrain, yTrain) 
 
 #predict labels
-yTest = clf.predict(xTest) 
+yTest = classifierMLP.predict(xTest) 
 
 tp = sum(yTest[:99])
 tn = sum(yTest[99:])	
