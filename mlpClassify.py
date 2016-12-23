@@ -9,9 +9,9 @@ def mlpClassify(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDo
 
 	vocabulary, ratio, posProbs, negProbs = computeRatio(poscounts, negcounts, alpha)
 
-	xTrain = [];
+	xTrain = []
 	xTrainWeighted = []
-	yTrain = [];
+	yTrain = []
 	for document in trainPosDocs:
 		indeces, indecesWeighted = processFilesMLP(posindir + '/' + document, vocabulary, posProbs, ngram, stemmer, negation)
 		#negLikIndexed, negLik = processFiles(directory + '/' + document, vocabulary, negProbs, ngram, stemmer, negation)
@@ -47,10 +47,10 @@ def mlpClassify(posindir, negindir, ngram, trainPosDocs, trainNegDocs, testPosDo
 
 	#training and fitting of the MLP
 	clf = MLPClassifier(solver='lbfgs', alpha=.1, hidden_layer_sizes=(10, 6), random_state=1)
-	clf.fit(xTrain, yTrain) 
+	clf.fit(xTrainWeighted, yTrain) 
 
 	#predict labels
-	yTest = clf.predict(xTest) 
+	yTest = clf.predict(xTestWeighted) 
 
 	tp = sum(yTest[:99])
 	fp = sum(yTest[99:])

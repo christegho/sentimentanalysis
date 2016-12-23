@@ -20,4 +20,4 @@ def processFiles(filename, vocabulary, ratio, ngram, stemmer, negation):
             featureVectorIndexed += ["%i:%f" % (i + 1, ratio[i])]
             featureVector.append(ratio[i])
 
-    return featureVectorIndexed, featureVector, indexesFileUnsorted
+    return featureVectorIndexed, featureVector

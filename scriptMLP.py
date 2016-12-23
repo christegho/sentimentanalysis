@@ -1,6 +1,22 @@
+from tokenize import *
+from getUniqueWords import *
+from getLexicon import *
+from getSymbolicScore import *
+from symScoreClassify import *
+from splitData import *
+from getFeatureVector import *
+from naiveBayesClassify import *
+
+import numpy as np
+
+posindir = os.path.abspath('') + '\\POS1'
+negindir = os.path.abspath('') + '\\NEG1'
+
+posDocs = tokenize(posindir)
+negDocs = tokenize(negindir)
 
 
-trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, 10, 1)
+trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitData(posDocs, negDocs, 3, 1)
 
 posVocabulary = getUniqueWords(trainPosDocs)
 negVocabulary = getUniqueWords(trainNegDocs)
@@ -48,11 +64,3 @@ tp = sum(yTest[:99])
 tn = sum(yTest[99:])	
 
 
-
-#SVM
-from sklearn import svm
-clf = svm.SVC()
-clf.fit(xTrain, yTrain) 
-
-#predict labels
-yTest = clf.predict(xTest) 
