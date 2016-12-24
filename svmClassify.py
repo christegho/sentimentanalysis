@@ -77,20 +77,16 @@ def svmClassify(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, tes
     predictionMLP = classifierMLP.predict(testVectors) 
 
     tpMLP = sum(predictionMLP[:99])
-    tnMLP = sum(predictionMLP[99:])    
+    fpMLP = sum(predictionMLP[99:])    
     tnMLP = 99-fpMLP
     fnMLP = 99-tpMLP
 
-    vsize = len(vectorizer.get_params())
-    mnbsize = len(classifierMNB.get_params())
-    svmsize = len(classifierSVM.get_params())
+    vsize = len(vectorizer.get_feature_names())
+    mnbsize = len(classifierMNB.get_params(deep=True))
+    svmsize = len(classifierSVM.get_params(deep=True))
 
     print("Vocabulary size")
     print vsize
-    print("ngram")
-    print ngram
-    print("iteration")
-    print iteration
     print("Results for SVM")
     print(classification_report(testLabels, predictionSVM))
     print svmsize
