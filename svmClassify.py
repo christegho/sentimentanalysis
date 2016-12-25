@@ -6,7 +6,7 @@ from sklearn import svm
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.neural_network import MLPClassifier
+#from sklearn.neural_network import MLPClassifier
 
 def svmClassify(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, stemmer, negation, ngram):
 
@@ -69,17 +69,17 @@ def svmClassify(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, tes
     fnNB = 99-tpNB
 
 
-    #training and fitting of the MLP
-    classifierMLP = MLPClassifier(solver='lbfgs', alpha=.8, hidden_layer_sizes=(5, 4), random_state=1)
-    classifierMLP.fit(trainVectors, trainLabels) 
+    # #training and fitting of the MLP
+    # classifierMLP = MLPClassifier(solver='lbfgs', alpha=.8, hidden_layer_sizes=(5, 4), random_state=1)
+    # classifierMLP.fit(trainVectors, trainLabels) 
 
-    #predict labels
-    predictionMLP = classifierMLP.predict(testVectors) 
+    # #predict labels
+    # predictionMLP = classifierMLP.predict(testVectors) 
 
-    tpMLP = sum(predictionMLP[:99])
-    fpMLP = sum(predictionMLP[99:])    
-    tnMLP = 99-fpMLP
-    fnMLP = 99-tpMLP
+    # tpMLP = sum(predictionMLP[:99])
+    # fpMLP = sum(predictionMLP[99:])    
+    # tnMLP = 99-fpMLP
+    # fnMLP = 99-tpMLP
 
     vsize = len(vectorizer.get_feature_names())
     mnbsize = len(classifierMNB.get_params(deep=True))
@@ -97,7 +97,7 @@ def svmClassify(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, tes
     print mnbsize
     print "TP and TN"
     print tpNB, tnNB
-    print("Results for MLP")
-    print(classification_report(testLabels, predictionMLP))
+    #print("Results for MLP")
+    #print(classification_report(testLabels, predictionMLP))
 
-    return tpSVM, tnSVM, tpNB, tnNB, tpMLP, tnMLP, predictionSVM, predictionMNB, predictionMLP, vsize, mnbsize, svmsize
+    return tpSVM, tnSVM, tpNB, tnNB, 0, 0, predictionSVM, predictionMNB, [], vsize, mnbsize, svmsize

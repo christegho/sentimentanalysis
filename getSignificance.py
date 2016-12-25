@@ -11,7 +11,7 @@ def getSignificance(significantTestArrays, nfold, ngramMax):
 	     ngram = n + 1
 	     ngram2 = n2 + 1
 	     sys1 = classifier + str(ngram)
-	     sys2 = classifier + str(ngram2)
+	     sys2 = classifier2 + str(ngram2)
 	     iterResults = np.zeros([10,2])
 	     for iter in range(nfold):
 	      for i in range(198):
