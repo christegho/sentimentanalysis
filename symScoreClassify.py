@@ -19,7 +19,9 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 	weightedtn = 0
 	weightedfp = 0
 	weightedfn = 0
-
+	classW = np.zeros((1,198))
+	classNonW = np.zeros((1,198))
+	i = 0
 	for document in testDocs:
 		posSymbolicScores = getSymbolicScore(posLexicon, testDocs[document]) #Get score for pos class lexicon
 		negSymbolicScores = getSymbolicScore(negLexicon, testDocs[document]) #Get score for neg class lexicon
@@ -32,8 +34,11 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 			else:
 				tn += .5
 				fp += .5
+			if (i % 2 == 0):
+				classNonW[0][i] = 1
 		elif (posSymbolicScores[0] > negSymbolicScores[0]):
 			posClassNonWeightedSS.append(document)
+			classNonW[0][i] = 1
 			if (posClass):
 				tp += 1
 			else:
@@ -56,17 +61,21 @@ def symScoreClassify(testDocs, posLexicon, negLexicon, posLexiconWeights, negLex
 			else:
 				weightedtn += .5
 				weightedfp += .5
+			if (i % 2 == 0):
+				classW[0][i] = 1
 		elif (sum(posWeightedScores) > sum(negWeightedScores)):
 			posClassWeightedSS.append(document)
 			if (posClass):
 				weightedtp += 1
 			else:
 				weightedfp += 1
+			classW[0][i] = 1
 		else:
 			negClassWeightedSS.append(document)
 			if (posClass):
 				weightedfn += 1
 			else:
 				weightedtn += 1
+		i+=1
 
-	return posClassWeightedSS, posClassNonWeightedSS, negClassWeightedSS, negClassNonWeightedSS, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn
+	return posClassWeightedSS, posClassNonWeightedSS, negClassWeightedSS, negClassNonWeightedSS, tp, tn, fp, fn, weightedtp, weightedtn, weightedfp, weightedfn, classW, classNonW

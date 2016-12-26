@@ -78,17 +78,53 @@ for iteration in range(0,maxIteration):
   vsize['NB'][ngram][iteration] = results[9]
   #vsize['MLP'][ngram][iteration] = results[9] 
 
+#Process with IDF vectorizer
+from svmClassifyIdf import *
+
+for classify in ['NBFF2', 'SVMFF2']:
+ allGramsResults[classify] = {}
+ vsize[classify] = {}
+ for n in range(ngramMax):
+  ngram = n+1
+  allGramsResults[classify][ngram]= np.zeros((nfold,2))
+  vsize[classify][ngram] = np.zeros((nfold,1))
+
+for classify in ['NBFF2', 'SVMFF2']:
+ significantTestArrays[classify] = {}
+ for n in range(ngramMax):
+  ngram = n+1
+  significantTestArrays[classify][ngram] = np.zeros((10,198))
+
+
+for iteration in range(0,maxIteration):
+ print('iteration')
+ trainPosDocs, trainNegDocs, testPosDocs, testNegDocs = splitDocs(posDocsLabels, negDocsLabels, nfold, iteration)
+ print iteration
+ for n in range(ngramMax):
+  ngram = n+1
+  print('ngram')
+  print ngram
+  stemmer = False
+  negation = False
+  results = svmClassifyIdf(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, testNegDocs, stemmer, negation, ngram)
+  allGramsResults['SVMFF2'][ngram][iteration,:] = results[:2]
+  allGramsResults['NBFF2'][ngram][iteration,:] = results[2:4]
+  significantTestArrays['SVMFF2'][ngram][iteration] = results[6]
+  significantTestArrays['NBFF2'][ngram][iteration] = results[7]
+  vsize['SVMFF2'][ngram][iteration] = results[9]
+
+
 sigResults = getSignificance(significantTestArrays, nfold, ngramMax)
 
 accResults = {}
-for classify in ['NBFF', 'SVMFF', 'NBTF', 'SVMTF', 'SVM', 'NB']:
+for classify in ['NBFF', 'SVMFF', 'NBTF', 'SVMTF', 'SVM', 'NB', 'NBFF2', 'SVMFF2']:
  accResults[classify] = {} 
  for n in range(ngramMax):
   ngram = n+1
   accResults[classify][ngram]= allGramsResults[classify][ngram].T.mean(1)
   
 
-thefile = open('accResults.txt', 'w')
+thefile = open('accResultsWithIDF.txt', 'w')
 for classify in accResults: 
  for ngram in accResults[classify]:
   item = accResults[classify][ngram]
@@ -98,13 +134,13 @@ for classify in accResults:
 
 thefile.close()
 
-thefile = open('sigResults.txt', 'w')
+thefile = open('sigResultsWithIDFWithBOWORIGINAL.txt', 'w')
 for item in sigResults:
   thefile.write("%s\n" %item)
 
 thefile.close()
 
-thefile = open('vsize.txt', 'w')
+thefile = open('vsizeWithIDF.txt', 'w')
 for classify in vsize: 
  for ngram in vsize[classify]:
   item = vsize[classify][ngram]
@@ -113,3 +149,14 @@ for classify in vsize:
   thefile.write("%s\n" %item.mean())
 
 thefile.close()
+
+significantTestArrays['BOW'] = {}
+significantTestArrays['BOWW'] = {}
+significantTestArrays['BOWW'][3] = np.zeros((10,198))
+significantTestArrays['BOW'][3] = np.zeros((10,198))
+
+significantTestArrays2 = {}
+for classify in ['NBFF', 'SVMFF', 'SVM', 'NB', 'NBFF2', 'SVMFF2', 'BOWW', 'BOW']:
+ significantTestArrays2[classify] = significantTestArrays[classify]
+ 
+sigResults = getSignificance(significantTestArrays2, nfold, ngramMax)
