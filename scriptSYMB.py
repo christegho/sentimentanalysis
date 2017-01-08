@@ -1,10 +1,7 @@
 from tokenize import *
-from getUniqueWords import *
 from getLexicon import *
-from getSymbolicScore import *
 from symScoreClassify import *
 from splitData import *
-from getFeatureVector import *
 from naiveBayesClassify import *
 
 import numpy as np
