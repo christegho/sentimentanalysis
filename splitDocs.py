@@ -11,8 +11,8 @@ def splitDocs(posDocs, negDocs, nfold, iteration):
 
 
 
-	testPosDocs = posDocs[(len(posDocs)*(iteration)/nfold):(len(posDocs)*(iteration+1)/nfold)-1]
-	testNegDocs = negDocs[(len(negDocs)*(iteration)/nfold):(len(negDocs)*(iteration+1)/nfold)-1]
+	testPosDocs = posDocs[int(len(posDocs)*(iteration)/nfold):int(len(posDocs)*(iteration+1)/nfold)-1]
+	testNegDocs = negDocs[int(len(negDocs)*(iteration)/nfold):int(len(negDocs)*(iteration+1)/nfold)-1]
 
 
 	posStart = len(posDocs)*(iteration+1)/nfold
@@ -22,8 +22,8 @@ def splitDocs(posDocs, negDocs, nfold, iteration):
 	if (negStart > len(negDocs)):
 		negStart = len(negDocs)
 
-	trainPosDocs2 = posDocs[posStart:]
-	trainNegDocs2 = negDocs[negStart:]
+	trainPosDocs2 = posDocs[int(posStart):]
+	trainNegDocs2 = negDocs[int(negStart):]
 
 	trainPosDocs = trainPosDocs1 + trainPosDocs2
 	trainNegDocs = trainNegDocs1 + trainNegDocs2

@@ -7,7 +7,7 @@ from nltk.sentiment.util import *
 def tokenizeNgrams(sentence, grams, stemmer, negation):
 	text = sentence.lower()
 	words = re.findall(r"[\w']+|[(){}.,!?;]*", text)
-	words = filter(None, words)
+	words = [item for item in words if item] 
 	if (stemmer):
 		#Create a new Porter stemmer.
 		stemmer = PorterStemmer()
