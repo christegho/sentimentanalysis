@@ -114,8 +114,8 @@ def main():
     test_x = test_x_pos + test_x_neg
     test_y = [1] * len(test_x_pos) + [0] * len(test_x_neg)
 
-    f = open('own.pkl', 'wb')
-    pkl.dump((train_x, train_y), f, -1)
+    f = open('owntest.pkl', 'wb')
+    #pkl.dump((train_x, train_y), f, -1)
     pkl.dump((test_x, test_y), f, -1)
     f.close()
 
