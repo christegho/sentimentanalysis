@@ -23,7 +23,7 @@ import os
 from subprocess import Popen, PIPE
 
 # tokenizer.perl is from Moses: https://github.com/moses-smt/mosesdecoder/tree/master/scripts/tokenizer
-tokenizer_cmd = ['./tokenizer.perl', '-l', 'en', '-q', '-']
+tokenizer_cmd = ['perl', './tokenizer.perl', '-l', 'en', '-q', '-']
 
 
 def tokenize(sentences):
@@ -41,17 +41,17 @@ def tokenize(sentences):
 def build_dict(path):
     sentences = []
     currdir = os.getcwd()
-    os.chdir('%s/POS/' % path)
+    os.chdir('%s/pos/' % path)
     for ff in glob.glob("*.txt"):
-        print(ff)
         with open(ff, 'r') as f:
             sentences.append(f.readline().strip())
-    os.chdir('%s/NEG/' % path)
+    os.chdir('%s/neg/' % path)
+    print('--here-')
     for ff in glob.glob("*.txt"):
         with open(ff, 'r') as f:
             sentences.append(f.readline().strip())
     os.chdir(currdir)
-
+    print(len(sentences))
     sentences = tokenize(sentences)
 
     print('Building dictionary..')
@@ -80,6 +80,7 @@ def build_dict(path):
 
 
 def grab_data(path, dictionary):
+    print(path)
     sentences = []
     currdir = os.getcwd()
     os.chdir(path)
@@ -93,22 +94,23 @@ def grab_data(path, dictionary):
     for idx, ss in enumerate(sentences):
         words = ss.strip().lower().split()
         seqs[idx] = [dictionary[w] if w in dictionary else 1 for w in words]
-
+    print('-grab Data done-')
     return seqs
 
 
 def main():
     # Get the dataset from http://ai.stanford.edu/~amaas/data/sentiment/
     path = dataset_path
-    dictionary = build_dict(os.path.join(path, 'TRAIN'))
+    dictionary = build_dict(os.path.join(path, 'train'))
 
-    train_x_pos = grab_data(path+'/TRAIN/POS', dictionary)
-    train_x_neg = grab_data(path+'/TRAIN/NEG', dictionary)
+    train_x_pos = grab_data(path+'/train/pos', dictionary)
+    train_x_neg = grab_data(path+'/train/neg', dictionary)
     train_x = train_x_pos + train_x_neg
     train_y = [1] * len(train_x_pos) + [0] * len(train_x_neg)
-
-    test_x_pos = grab_data(path+'/TEST/POS', dictionary)
-    test_x_neg = grab_data(path+'/TEST/NEG', dictionary)
+    print('Moving to Test files')
+    print(path)
+    test_x_pos = grab_data(path+'/test/pos', dictionary)
+    test_x_neg = grab_data(path+'/test/neg', dictionary)
     test_x = test_x_pos + test_x_neg
     test_y = [1] * len(test_x_pos) + [0] * len(test_x_neg)
 
