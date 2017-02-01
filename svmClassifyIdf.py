@@ -76,17 +76,17 @@ def svmClassifyIdf(posindir, negindir, trainPosDocs, trainNegDocs, testPosDocs, 
     svmsize = len(classifierSVM.get_params(deep=True))
 
     print("Vocabulary size")
-    print vsize
+    print(vsize)
     print("Results for SVM")
     print(classification_report(testLabels, predictionSVM))
-    print svmsize
-    print "TP and TN"
-    print tpSVM, tnSVM
+    print(svmsize)
+    print("TP and TN")
+    print(tpSVM, tnSVM)
     print("Results for MNB")
     print(classification_report(testLabels, predictionMNB))
-    print mnbsize
-    print "TP and TN"
-    print tpNB, tnNB
+    print(mnbsize)
+    print("TP and TN")
+    print(tpNB, tnNB)
     #print("Results for MLP")
     #print(classification_report(testLabels, predictionMLP))
 
